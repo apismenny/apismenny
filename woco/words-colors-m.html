@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+
+<script src="freq-adv.js"></script>
+<script src="freq-v.js"></script>
+<script src="freq-a.js"></script>
+<script src="freq-s.js"></script>
+
+<script src="petrovich.js"></script>
+<script src="petrovich.rules.js"></script>
+
+<script src="randomColor.js"></script>
+
+<script>
+
+// var seed = 1;
+// function random() {
+//     var x = Math.sin(seed) * 10000;
+//     return x - Math.floor(x);
+// }
+
+stage = 0;
+
+function A(){
+  return words_a[Math.floor((Math.random() * words_a.length) + 1)][0]
+}
+
+function S(){
+  return words_s[Math.floor((Math.random() * words_s.length) + 1)][0]
+}
+
+function ADV(){
+  return words_adv[Math.floor((Math.random() * words_adv.length) + 1)][0]
+}
+
+function V(){
+  return words_v[Math.floor((Math.random() * words_v.length) + 1)][0]
+}
+
+
+function Go(){
+
+  var colors = []
+
+  for(i = 0; i < 5 ; i++)
+  {
+    colors[i] = randomColor()
+  }
+
+  var container = document.getElementById("circles");
+  var mySvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  mySvg.setAttribute("version", "1.2");
+  mySvg.setAttribute("baseProfile", "tiny");
+  mySvg.setAttribute("width", "1200");
+  mySvg.setAttribute("height", "170");
+  container.appendChild(mySvg);
+
+  for(var i = 0; i < colors.length; i++){
+
+    color = colors[i];
+
+    c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    c.setAttribute("cx", i*185+120);
+    c.setAttribute("cy", "90");
+    c.setAttribute("r", "80");
+    c.setAttribute("fill", color);
+    mySvg.appendChild(c);
+  }
+
+
+    r = '<div style="font-size:70pt; color:' + randomColor() + ' ">'
+
+    // r += ADV() + ' ' + V() + ' ' + A() + ' ' + S()
+    // r += ADV() + ' ' + A() + ' ' + S() + ' ' + V() + ' и ' + S() + ' ' + V() + '<br> но это ' + ADV()
+
+    var Ap = new Petrovich(A(), Petrovich.MALE);
+    var Sp = new Petrovich(S(), Petrovich.MALE);
+
+    r += A() + ' ' + S() + '<br> хочет ' + ADV() + ' ' + V() + ' ' + Ap.lastName(Petrovich.ACCUSATIVE) + ' ' + Sp.lastName(Petrovich.ACCUSATIVE)//+ ',<br>' + S() + ' и ' + S() + ',<br> но это '+ ADV()
+
+    // r +=  S() + ' и ' + S() + ',<br>' + S() + ' и ' + S() + '<br> это ' + ADV()
+
+    r += '</div>'
+
+    document.getElementById("words").innerHTML = r
+
+}
+
+</script>
+
+</head>
+
+<body onLoad="Go()">
+
+<span id="circles"></span>
+
+<div style="margin-left:50px" id="words"></div>
+
+<span id="colors"></span>
+
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+
+<script src="freq-adv.js"></script>
+<script src="freq-v.js"></script>
+<script src="freq-a.js"></script>
+<script src="freq-s.js"></script>
+
+<script src="petrovich.js"></script>
+<script src="petrovich.rules.js"></script>
+
+<script src="randomColor.js"></script>
+
+<script>
+
+// var seed = 1;
+// function random() {
+//     var x = Math.sin(seed) * 10000;
+//     return x - Math.floor(x);
+// }
+
+function A(){
+  return words_a[Math.floor((Math.random() * words_a.length) + 1)][0]
+}
+
+function S(){
+  return words_s[Math.floor((Math.random() * words_s.length) + 1)][0]
+}
+
+function ADV(){
+  return words_adv[Math.floor((Math.random() * words_adv.length) + 1)][0]
+}
+
+function V(){
+  return words_v[Math.floor((Math.random() * words_v.length) + 1)][0]
+}
+
+function AdjToFemale(word){
+      word = word.replace(/ый$/, "ая")
+      word = word.replace(/ий$/, "ая")
+      word = word.replace(/ой$/, "ая")
+      word = word.replace(/ев$/, "ева")
+      word = word.replace(/ов$/, "ва")
+      word = word.replace(/ин$/, "ина")
+
+      return word
+}
+
+function AdjToGenderless(word){
+      word = word.replace(/ый$/, "ое")
+      word = word.replace(/ий$/, "ое")
+      word = word.replace(/ой$/, "ое")
+      word = word.replace(/ев$/, "ево")
+      word = word.replace(/ов$/, "во")
+      word = word.replace(/ин$/, "ино")
+
+      return word
+}
+
+function AdjToFemaleAccusative(word){
+      word = word.replace(/ый$/, "ую")
+      word = word.replace(/ий$/, "ую")
+      word = word.replace(/ой$/, "ую")
+      word = word.replace(/ев$/, "еву")
+      word = word.replace(/ов$/, "ву")
+      word = word.replace(/ин$/, "ину")
+
+      return word
+}
+
+function AdjToGenderlessAccusative(word){
+      word = word.replace(/ый$/, "ое")
+      word = word.replace(/ий$/, "ое")
+      word = word.replace(/ой$/, "ое")
+      word = word.replace(/ев$/, "ево")
+      word = word.replace(/ов$/, "во")
+      word = word.replace(/ин$/, "ино")
+
+      return word
+}
+
+// ещё бывает множественное число — "хлопоты", "ножницы"
+
+function SubjIsMale(word){
+  if (word.match(/(а|я|ть|чь|жь|шь|рь])$/)){
+    return false
+  }
+  else {
+    return true
+  }
+}
+
+function SubjGender(word){
+  if (word.match(/(а|я|ть|чь|жь|шь|сь])$/)){
+    return 'f'
+  }
+
+  if (word.match(/(о|е)$/)){
+    return 'g'
+  }
+
+  return 'm'
+
+}
+
+function Go(){
+
+    r = '<div style="font-size:70pt; color:' + randomColor() + ' ">'
+
+    Subj1 = S()
+    Adj1 = A()
+    Adj3 = A()
+
+    Subj2 = S()
+    Adj2 = A()
+
+    console.log('Subj2 original form is ' + Subj2)
+
+  switch(SubjGender(Subj2)){
+    case 'm':
+
+      Subj2P = new Petrovich(Subj2,'', Petrovich.MALE)
+      Adj2P = new Petrovich(Adj2,'', Petrovich.MALE)
+
+      Subj2 = Subj2P.lastName(Petrovich.ACCUSATIVE)
+      Adj2 = Adj2P.lastName(Petrovich.ACCUSATIVE)
+
+      console.log('Subj2 is male')
+      break
+
+    case 'f':
+      Subj2P = new Petrovich(Subj2, Petrovich.FEMALE)
+      Subj2 = Subj2P.lastName(Petrovich.ACCUSATIVE)
+      Adj2 = AdjToFemaleAccusative(Adj2)
+      console.log('Subj2 is female')
+      break
+
+    case 'g':
+        console.log('Subj2 is genderless')
+        Adj2 = AdjToGenderlessAccusative(Adj2)
+      break
+  }
+
+
+    if(SubjGender(Subj1) == 'f'){
+        Adj1 = AdjToFemale(Adj1)
+		Adj3 = AdjToFemale(Adj3)
+    }
+
+    if(SubjGender(Subj1) == 'g'){
+        Adj1 = AdjToGenderless(Adj1)
+		Adj3 = AdjToGenderless(Adj3)
+    }
+
+
+    r += Adj1 + ' ' + Adj3 + ' ' + Subj1
+
+    r += '</div>'
+
+    document.getElementById("words").innerHTML = r
+
+}
+
+</script>
+
+</head>
+
+<body onLoad="Go()">
+
+<span id="circles"></span>
+
+<div style="margin-left:50px" id="words"></div>
+
+<span id="colors"></span>
+
+</body>
+</html>
